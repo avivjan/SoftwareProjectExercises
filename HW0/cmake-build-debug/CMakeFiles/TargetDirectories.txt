@@ -1,0 +1,3 @@
+/Users/avivjan/Library/CloudStorage/GoogleDrive-avivjan2000@gmail.com/My Drive/Notability/תואר ראשון מדמח תא /Software project/SoftwareProjectExercises/Exercise1/cmake-build-debug/CMakeFiles/Exercise1.dir
+/Users/avivjan/Library/CloudStorage/GoogleDrive-avivjan2000@gmail.com/My Drive/Notability/תואר ראשון מדמח תא /Software project/SoftwareProjectExercises/Exercise1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/avivjan/Library/CloudStorage/GoogleDrive-avivjan2000@gmail.com/My Drive/Notability/תואר ראשון מדמח תא /Software project/SoftwareProjectExercises/Exercise1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
