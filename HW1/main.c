@@ -16,8 +16,6 @@ int main(int argc, char *argv[])
     sscanf(argv[3], "%d", &d);
     sscanf(argv[4], "%d", &iter);
 
-    printf("k=%d, n=%d, d=%d, iter=%d\n", k, n, d, iter);
-
     kMeansAlgorithm(k, n, d, iter);
     return 0;
 }
@@ -91,7 +89,7 @@ int updateCentroid(double *centroid, double *clusterSum, int clusterQty, int d)
     {
         *oldCentroidCursor = *newCentroidCursor;
     }
-    return dist >= epsilon;
+    return dist < epsilon;
 }
 
 void clearClusters(double *clusterSums, int *clusterQtys, int k, int d)
@@ -193,7 +191,7 @@ void printCentroids(double *centroids, int k, int d)
         centroidEnd = centroids + d; // initialize centroidEnd to end of current centroid
         while (centroids < centroidEnd - 1)
         {
-            printf("%f,", *(centroids++)); // print current coordinate with , for all non last coordinates
+            printf("%.4f,", *(centroids++)); // print current coordinate with , for all non last coordinates
         }
         printf("%.4f\n", *(centroids++)); // print \n after last coordinate
     }
