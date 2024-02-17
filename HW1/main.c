@@ -113,7 +113,7 @@ int updateCentroids(double *centroids, double *clusterSums, int *clusterQtys, in
     double *clusterSumsCursor = clusterSums;
     int *clusterQtysCursor = clusterQtys;
 
-    for (int i = 0; i < k * d; i++){
+    for (int i = 0; i < k; i++){
         // update current centroid. Change res to false if current centroid does not
         // abide convergence condition in this iteration.
         res = updateCentroid(centroidsCursor, clusterSumsCursor, *clusterQtysCursor, d) && res;
@@ -189,7 +189,7 @@ void kMeansAlgorithm(int k, int n, int d, int iter){
     double *dataPoints = kMeansInput(n, d);
     double *centroids = initCentroids(dataPoints, k, d);
     double *clusterSums = (double*) calloc(k * d, sizeof(double));  // sum of data points in each cluster
-    int *clusterQtys = (int*) calloc(k, sizeof(double)); // Quantity of data points in each cluster
+    int *clusterQtys = (int*) calloc(k, sizeof(int)); // Quantity of data points in each cluster
     int i = 0;
     do{
         computeClusterSums(dataPoints, centroids, clusterSums, clusterQtys, k, n, d);
