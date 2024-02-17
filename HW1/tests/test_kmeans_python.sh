@@ -1,8 +1,8 @@
 #!/bin/bash
 
-SCRIPT_PATH="../kmeans.py"
-declare -a inputs=("input_1.txt" "input_2.txt" "input_3.txt")
-declare -a outputs=("output_1.txt" "output_2.txt" "output_3.txt")
+SCRIPT_PATH="kmeans.py"
+declare -a inputs=("tests/input_1.txt" "tests/input_2.txt" "tests/input_3.txt")
+declare -a outputs=("tests/output_1.txt" "tests/output_2.txt" "tests/output_3.txt")
 declare -a ks=(3 7 15)
 declare -a max_iters=(600 0 300)
 
@@ -22,26 +22,37 @@ for index in "${!inputs[@]}"; do
     fi
     
     echo "Executing command: $COMMAND"
-    eval $COMMAND > $ACTUAL_OUTPUT_FILE
+    eval $COMMAND >$ACTUAL_OUTPUT_FILE 2>&1
 
-    echo "Checking for differences..."
-
-    line_number=0
-    test_fail=false
-
-    while IFS= read -r line_exp <&3 && IFS= read -r line_act <&4; do
-        ((line_number++))
-        if [ "$line_exp" != "$line_act" ]; then
-            test_fail=true
-            echo -e "\033[1;31mLine $line_number: Expected '$line_exp' but got '$line_act'\033[0m"
-            break
-        fi
-    done 3<$EXPECTED_OUTPUT_FILE 4<$ACTUAL_OUTPUT_FILE
-
-    if $test_fail; then
+    # Check the exit status of the last command
+    if [ $? -ne 0 ]; then
+        echo -e "\033[1;31mError executing command: $COMMAND\033[0m"
+        echo "Python output:"
+        echo -e "\033[35m" # Start purple color
+        cat $ACTUAL_OUTPUT_FILE # Display Python output/error
+        echo -e "\033[0m" # Reset to default color
         echo -e "\033[1;31m\033[1mTEST FAIL\033[0m"
     else
-        echo -e "\033[1;32m\033[1mTEST PASS\033[0m"
+
+        echo "Checking for differences..."
+
+        line_number=0
+        test_fail=false
+
+        while IFS= read -r line_exp <&3 && IFS= read -r line_act <&4; do
+            ((line_number++))
+            if [ "$line_exp" != "$line_act" ]; then
+                test_fail=true
+                echo -e "\033[1;31mLine $line_number: Expected '$line_exp' but got '$line_act'\033[0m"
+                break
+            fi
+        done 3<$EXPECTED_OUTPUT_FILE 4<$ACTUAL_OUTPUT_FILE
+
+        if $test_fail; then
+            echo -e "\033[1;31m\033[1mTEST FAIL\033[0m"
+        else
+            echo -e "\033[1;32m\033[1mTEST PASS\033[0m"
+        fi
     fi
 
     rm $ACTUAL_OUTPUT_FILE
