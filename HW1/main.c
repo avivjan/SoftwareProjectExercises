@@ -14,7 +14,13 @@ int main(int argc, char *argv[])
     sscanf(argv[1], "%d", &k);
     sscanf(argv[2], "%d", &n);
     sscanf(argv[3], "%d", &d);
-    sscanf(argv[4], "%d", &iter);
+
+    if(argc == 5){
+        sscanf(argv[4], "%d", &iter);
+    }
+    else{
+        iter = 200;
+    }
 
     kMeansAlgorithm(k, n, d, iter);
     return 0;
