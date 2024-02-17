@@ -15,10 +15,12 @@ int main(int argc, char *argv[])
     sscanf(argv[2], "%d", &n);
     sscanf(argv[3], "%d", &d);
 
-    if(argc == 5){
+    if (argc == 5)
+    {
         sscanf(argv[4], "%d", &iter);
     }
-    else{
+    else
+    {
         iter = 200;
     }
 
@@ -30,9 +32,11 @@ double *kMeansInput(int n, int d)
 {
     double *inputArray = (double *)malloc(n * d * sizeof(double));
     double *cursor = inputArray;
-    for (int i = 0; i < n; i++)
+    int i;
+    for (i = 0; i < n; i++)
     {
-        for (int j = 0; j < d - 1; j++)
+        int j;
+        for (j = 0; j < d - 1; j++)
         {
             scanf("%lf,", cursor++);
         }
@@ -55,21 +59,21 @@ double eucDist(double *vec1, double *vec2, int d)
 
 double *initCentroids(double *dataPoints, int k, int d)
 {
-    double *centroids;       // pointer to array representing centroids
-    double *centroidsEnd;    // pointer to end of array representing centroids
-    double *centroidsCursor; // cursor in centroids array
-    double *centroidEnd;     // end of current centroid (for looping over the coordinates of a single centroid)
+    double *centroids;       /* pointer to array representing centroids */
+    double *centroidsEnd;    /* pointer to end of array representing centroids*/
+    double *centroidsCursor; /* cursor in centroids array*/
+    double *centroidEnd;     /* end of current centroid (for looping over the coordinates of a single centroid)*/
 
-    centroids = (double *)malloc(k * d * sizeof(double)); // allocate centroids array
+    centroids = (double *)malloc(k * d * sizeof(double)); /* allocate centroids array*/
     centroidsEnd = centroids + k * d;
-    centroidsCursor = centroids; // initialize cursor to start of centroids array
+    centroidsCursor = centroids; /* initialize cursor to start of centroids array*/
 
     while (centroidsCursor < centroidsEnd)
     {
-        centroidEnd = centroidsCursor + d; // set centroidEnd to end of current centroid
+        centroidEnd = centroidsCursor + d; /* set centroidEnd to end of current centroid*/
         while (centroidsCursor < centroidEnd)
         {
-            *(centroidsCursor++) = *(dataPoints++); // initialize current coordinate of centroid and move to next
+            *(centroidsCursor++) = *(dataPoints++); /* initialize current coordinate of centroid and move to next*/
         }
     }
 
@@ -78,18 +82,18 @@ double *initCentroids(double *dataPoints, int k, int d)
 
 int updateCentroid(double *centroid, double *clusterSum, int clusterQty, int d)
 {
-    double *newCentroidCursor; // pointer in clusterSum array
-    double *clusterSumEnd;     // end of clusterSum, for loops
-    double *oldCentroidCursor; // pointer in centroid
+    double *newCentroidCursor; /* pointer in clusterSum array*/
+    double *clusterSumEnd;     /* end of clusterSum, for loops*/
+    double *oldCentroidCursor; /* pointer in centroid*/
     double dist;
     clusterSumEnd = clusterSum + d;
-    // divide sum by cluster size to get new centroid
+    /* divide sum by cluster size to get new centroid*/
     for (newCentroidCursor = clusterSum; newCentroidCursor < clusterSumEnd; ++newCentroidCursor)
     {
         *newCentroidCursor = *newCentroidCursor / clusterQty;
     }
-    dist = eucDist(clusterSum, centroid, d); // for convergence condition
-    // copy new centroid to new centroid array
+    dist = eucDist(clusterSum, centroid, d); /* for convergence condition*/
+    /* copy new centroid to new centroid array*/
     for (newCentroidCursor = clusterSum, oldCentroidCursor = centroid;
          newCentroidCursor < clusterSumEnd; ++newCentroidCursor, ++oldCentroidCursor)
     {
@@ -100,18 +104,18 @@ int updateCentroid(double *centroid, double *clusterSum, int clusterQty, int d)
 
 void clearClusters(double *clusterSums, int *clusterQtys, int k, int d)
 {
-    double *clusterSumsEnd; // pointer to end of clusterSums array
-    int *clusterQtysEnd;    // pointer to end of clusterQtysEnd
+    double *clusterSumsEnd; /* pointer to end of clusterSums array*/
+    int *clusterQtysEnd;    /* pointer to end of clusterQtysEnd*/
 
     clusterSumsEnd = clusterSums + k * d;
-    // clearing clusterSums array
+    /* clearing clusterSums array*/
     while (clusterSums < clusterSumsEnd)
     {
         *(clusterSums++) = 0;
     }
 
     clusterQtysEnd = clusterQtys + k;
-    // clearing clusterQtys array
+    /* clearing clusterQtys array*/
     while (clusterQtys < clusterQtysEnd)
     {
         *(clusterQtys++) = 0;
@@ -124,14 +128,14 @@ int updateCentroids(double *centroids, double *clusterSums, int *clusterQtys, in
     double *centroidsCursor = centroids;
     double *clusterSumsCursor = clusterSums;
     int *clusterQtysCursor = clusterQtys;
-
-    for (int i = 0; i < k; i++)
+    int i;
+    for (i = 0; i < k; i++)
     {
-        // update current centroid. Change res to false if current centroid does not
-        // abide convergence condition in this iteration.
+        /* update current centroid. Change res to false if current centroid does not*/
+        /* abide convergence condition in this iteration.*/
         res = updateCentroid(centroidsCursor, clusterSumsCursor, *clusterQtysCursor, d) && res;
 
-        // advance cursors
+        /* advance cursors*/
         centroidsCursor += d;
         clusterSumsCursor += d;
         clusterQtysCursor++;
@@ -142,64 +146,68 @@ int updateCentroids(double *centroids, double *clusterSums, int *clusterQtys, in
 
 void updateClusters(double *vec, double *centroids, double *clusterSums, int *clusterQtys, int k, int d)
 {
-    // Finding closest cluster
+    /* Finding closest cluster*/
     int closestCluster = 0;
     double minDist = eucDist(vec, centroids, d);
     double *centroidsCursor = &centroids[d];
     double dist;
-
-    for (int i = 1; i < k; i++)
+    double *clusterSumsCursor;
+    double *vecCursor;
+    int i;
+    for (i = 1; i < k; i++)
     {
         dist = eucDist(vec, centroidsCursor, d);
         if (dist < minDist)
         {
             minDist = dist;
-            closestCluster = i; // maintaining the closest cluster
+            closestCluster = i; /* maintaining the closest cluster*/
         }
 
-        centroidsCursor += d; // updating centroidsCursor to the next centroid
+        centroidsCursor += d; /* updating centroidsCursor to the next centroid*/
     }
 
-    // Now closestCluster is the index of the closest cluster.
-    // We will proceed to update clusterSums and clusterQtys.
-    clusterQtys[closestCluster]++;                                // incrementing counter of elements in closest cluster
-    double *clusterSumsCursor = &clusterSums[closestCluster * d]; // now points to the start of the sum of data points in the closest cluster
-    // adding current data points to sum of closest cluster
-    for (double *vecCursor = vec; vecCursor < &vec[d]; vecCursor++)
+    /* Now closestCluster is the index of the closest cluster.*/
+    /* We will proceed to update clusterSums and clusterQtys.*/
+    clusterQtys[closestCluster]++;
+    /* incrementing counter of elements in closest clusterv*/
+    clusterSumsCursor = &clusterSums[closestCluster * d]; /* now points to the start of the sum of data points in the closest cluster*/
+    /* adding current data points to sum of closest cluster*/
+
+    for (vecCursor = vec; vecCursor < &vec[d]; vecCursor++)
     {
         *clusterSumsCursor += *vecCursor;
-        clusterSumsCursor++; // progressing along cluster sum too
+        clusterSumsCursor++; /* progressing along cluster sum too*/
     }
 
-    // the function is done, so will exit.
+    /* the function is done, so will exit.*/
 }
 
 void computeClusterSums(double *dataPoints, double *centroids, double *clusterSums, int *clusterQtys, int k, int n, int d)
 {
-    double *dataPointsEnd = dataPoints + n * d; // end of dataPoints array
+    double *dataPointsEnd = dataPoints + n * d; /* end of dataPoints array*/
     while (dataPoints < dataPointsEnd)
     {
-        // for every data point, update the clusterSums
+        /* for every data point, update the clusterSums*/
         updateClusters(dataPoints, centroids, clusterSums, clusterQtys, k, d);
         dataPoints += d;
     }
-    // function is done, so will return
+    /* function is done, so will return*/
 }
 
 void printCentroids(double *centroids, int k, int d)
 {
-    double *centroidsEnd; // end of centroids array
-    double *centroidEnd;  // end of current centroid (for iterating over coordinates of a single centroid)
+    double *centroidsEnd; /* end of centroids array*/
+    double *centroidEnd;  /* end of current centroid (for iterating over coordinates of a single centroid)*/
 
-    centroidsEnd = centroids + k * d; // initialize centroidsEnd to end of centroids array
+    centroidsEnd = centroids + k * d; /* initialize centroidsEnd to end of centroids array*/
     while (centroids < centroidsEnd)
     {
-        centroidEnd = centroids + d; // initialize centroidEnd to end of current centroid
+        centroidEnd = centroids + d; /* initialize centroidEnd to end of current centroid*/
         while (centroids < centroidEnd - 1)
         {
-            printf("%.4f,", *(centroids++)); // print current coordinate with , for all non last coordinates
+            printf("%.4f,", *(centroids++)); /* print current coordinate with , for all non last coordinates*/
         }
-        printf("%.4f\n", *(centroids++)); // print \n after last coordinate
+        printf("%.4f\n", *(centroids++)); /* print \n after last coordinate*/
     }
 }
 
@@ -207,8 +215,8 @@ void kMeansAlgorithm(int k, int n, int d, int iter)
 {
     double *dataPoints = kMeansInput(n, d);
     double *centroids = initCentroids(dataPoints, k, d);
-    double *clusterSums = (double *)calloc(k * d, sizeof(double)); // sum of data points in each cluster
-    int *clusterQtys = (int *)calloc(k, sizeof(int));              // Quantity of data points in each cluster
+    double *clusterSums = (double *)calloc(k * d, sizeof(double)); /* sum of data points in each cluster*/
+    int *clusterQtys = (int *)calloc(k, sizeof(int));              /* Quantity of data points in each cluster*/
     int i = 0;
     do
     {

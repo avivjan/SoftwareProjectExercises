@@ -6,7 +6,7 @@ PROGRAM_PATH="./main.c"
 EXECUTABLE="kmeans.out"
 
 # Compile the C program
-gcc -o $EXECUTABLE $PROGRAM_PATH
+gcc -ansi -Wall -Wextra -Werror -pedantic-errors -o $EXECUTABLE $PROGRAM_PATH 
 if [ $? -ne 0 ]; then
     echo "Compilation failed."
     exit 1

@@ -1,7 +1,7 @@
 /*
  * Receive input from stdin into array.
  */
-double * kMeansInput(int n, int d);
+double *kMeansInput(int n, int d);
 /*
  * Calculates Euclidean distance between two vectors.
  * Assumes both vectors are of dimension d.
@@ -17,7 +17,7 @@ short converge(double *deltaArray);
 /*
  * Initializes centroids to first k elements.
  */
-double * initCentroids(double *dataPoints, int k, int d);
+double *initCentroids(double *dataPoints, int k, int d);
 /*
  * updates centroid values. returns true iff convergence condition is true.
  * Makes all values of clusterSums and clusterQtys 0 before returning.
