@@ -3,33 +3,77 @@ import math
 import statistics
 import numpy as np
 
-def validate_iter():
-    iter = int(sys.argv[2])
-    if int(iter) < 2 or int(iter) > 999: 
-        print("Invalid maximum iteration!")
-        sys.exit(1)
-    return iter
 
-def validate_K():
-    K = int(sys.argv[1])
-    if int(K) < 2 or int(K) > 999:
+
+def validate_K(n):
+    k = 0
+    try:
+        k = int(sys.argv[1])
+        if k < 2 or k > n or k == n:
+            print("Invalid number of clusters!")
+            sys.exit(1)
+        return k
+    except ValueError:
+        print("Invalid number of clusters!")
+        sys.exit(1)
+        
+def validate_n():
+    n = 0
+    try:
+        n = int(sys.argv[2])
+        if not n > 1:
+            print("Invalid number of points!")
+            sys.exit(1)
+        return n
+    except ValueError:
+        print("Invalid number of points!")
+        sys.exit(1)
+
+
+def validate_d():
+    d = 0
+    try:
+        d = int(sys.argv[3])
+        if not d > 0:
+            print("Invalid dimension of point!")
+            sys.exit(1)
+        return d
+    except ValueError:
+        print("Invalid dimension of point!")
+        sys.exit(1)
+        
+        
+def validate_iter():
+    iter = 0
+    try:
+        iter = int(sys.argv[4])
+        if iter < 2 or iter > 1000 or iter == 1000:
+            print("Invalid maximum iteration!")
+            sys.exit(1)
+        return iter
+    except ValueError:
         print("Invalid maximum iteration!")
         sys.exit(1)
-    return K
+
         
 def process_input():  
-    K = validate_K()
+    if len(sys.argv) != 5 and len(sys.argv) != 6:
+        print("An Error Has occurred!")
+        sys.exit(1)
+        
+    N = validate_n()
+    K = validate_K(N)
+    D = validate_d()
+    
     file = None
     epsilon = 0.001
     iter = 200
-    if len(sys.argv) == 3: # 2 arguments, no iter provided.
-        file = sys.argv[2]
-    elif len(sys.argv) == 4: # 3 arguments, iter provided.
+    if len(sys.argv) == 5:
+        file = sys.argv[4]
+    elif len(sys.argv) == 6:
         iter = validate_iter()
-        file = sys.argv[3]
-    else: 
-        print("An Error Has occurred", len(sys.argv))
-        sys.exit(1)
+        file = sys.argv[5]
+
     return (K, iter, file)
         
 def read_data_from_file(file):
@@ -40,13 +84,15 @@ def read_data_from_file(file):
                 data.append([float(x) for x in line.split(',')])
         return data
     except:
-        raise Exception("Error - reading data from file failed!", file)
+        print("An Error Has occurred!")
+        sys.exit(1)
                         
                   
     
 def get_distance(a, b):
     if len(a) != len(b):
-        raise Exception("Error - vectors are not the same length!")
+        print("An Error Has occurred!")
+        sys.exit(1)
     return math.sqrt(sum([(a[i] - b[i]) ** 2 for i in range(len(a))]))
 
 
@@ -91,8 +137,8 @@ def kmeans(k, iter, data):
     for i in range(iter):
         copy_centroids = list(centroids)
         for j in range(len(data)):
-            diffs = [get_distance(data[j], centroid) for centroid in centroids]
-            closest_centroid = diffs.index(min(diffs))#avoid using index func
+            diffs = [(get_distance(data[j], centroid),index) for (index, centroid) in enumerate(centroids)]
+            closest_centroid = min(diffs, key = lambda x: x[0])[1]
             reassign_data_point(j,data[j], data_cluster[j], closest_centroid, clusters, data_cluster)
         update_centroids(centroids, clusters)
         if check_convergence(centroids, copy_centroids):
