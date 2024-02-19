@@ -47,7 +47,7 @@ def validate_iter():
     iter = 0
     try:
         iter = int(sys.argv[4])
-        if iter < 2 or iter > 1000:
+        if iter < 2 or iter > 1000 or iter == 1000:
             print("Invalid maximum iteration!")
             sys.exit(1)
         return iter
