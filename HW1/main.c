@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
     {
         iter = atoi(argv[4]);
         /* checking input validity (1 < iter < 1000) */
-        if (iter < 1 || iter >= 1000){
+        if (iter <= 1 || iter >= 1000){
             printf("Invalid maximum iteration!");
             return 1;
         }
@@ -91,11 +91,11 @@ int main(int argc, char *argv[])
     }
 
     /* checking input validity (1 < k < n, n > 1, d > 0) */
-    if (n < 1){
+    if (n <= 1){
         printf("Invalid number of points!");
         return 1;
     }
-    if (k >= n || k < 1){
+    if (k >= n || k <= 1){
         printf("Invalid number of clusters!");
         return 1;
     }
