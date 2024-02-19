@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to the C source code
-PROGRAM_PATH="./main.c"
+PROGRAM_PATH="./kmeans.c"
 # Name of the executable to create
 EXECUTABLE="kmeans.out"
 
