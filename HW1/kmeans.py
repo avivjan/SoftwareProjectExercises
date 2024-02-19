@@ -1,7 +1,6 @@
 import sys
 import math
 import statistics
-import numpy as np
 
 
 
