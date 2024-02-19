@@ -1,3 +1,4 @@
+User
 #!/bin/bash
 
 SCRIPT_PATH="kmeans.py"

@@ -9,7 +9,7 @@ def validate_K(n):
     k = 0
     try:
         k = int(sys.argv[1])
-        if k < 2 or k > n:
+        if k < 2 or k > n or k == n:
             print("Invalid number of clusters!")
             sys.exit(1)
         return k
