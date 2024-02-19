@@ -1,8 +1,8 @@
 #!/bin/bash
 
-SCRIPT_PATH="../kmeans.py"
-declare -a inputs=("input_1.txt" "input_2.txt" "input_3.txt")
-declare -a outputs=("output_1.txt" "output_2.txt" "output_3.txt")
+SCRIPT_PATH="kmeans.py"
+declare -a inputs=("tests/input_1.txt" "tests/input_2.txt" "tests/input_3.txt")
+declare -a outputs=("tests/output_1.txt" "tests/output_2.txt" "tests/output_3.txt")
 declare -a ks=(3 7 15)
 declare -a ns=(800 430 5000)
 declare -a ds=(3 11 5)
