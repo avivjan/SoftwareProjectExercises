@@ -84,13 +84,15 @@ def read_data_from_file(file):
                 data.append([float(x) for x in line.split(',')])
         return data
     except:
-        raise Exception("Error - reading data from file failed!")
+        print("An Error Has occurred!")
+        sys.exit(1)
                         
                   
     
 def get_distance(a, b):
     if len(a) != len(b):
-        raise Exception("Error - vectors are not the same length!")
+        print("An Error Has occurred!")
+        sys.exit(1)
     return math.sqrt(sum([(a[i] - b[i]) ** 2 for i in range(len(a))]))
 
 
