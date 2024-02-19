@@ -58,7 +58,8 @@ def validate_iter():
         
 def process_input():  
     if len(sys.argv) != 5 and len(sys.argv) != 6:
-        print("An Error Has occurred")
+        print(len(sys.argv))
+        print("An Error Has occurred1")
         sys.exit(1)
         
     N = validate_n()

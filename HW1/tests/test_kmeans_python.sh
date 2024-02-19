@@ -1,24 +1,28 @@
 #!/bin/bash
 
-SCRIPT_PATH="kmeans.py"
-declare -a inputs=("tests/input_1.txt" "tests/input_2.txt" "tests/input_3.txt")
-declare -a outputs=("tests/output_1.txt" "tests/output_2.txt" "tests/output_3.txt")
+SCRIPT_PATH="../kmeans.py"
+declare -a inputs=("input_1.txt" "input_2.txt" "input_3.txt")
+declare -a outputs=("output_1.txt" "output_2.txt" "output_3.txt")
 declare -a ks=(3 7 15)
+declare -a ns=(800 430 5000)
+declare -a ds=(3 11 5)
 declare -a max_iters=(600 0 300)
 
 for index in "${!inputs[@]}"; do
     INPUT_FILE="${inputs[$index]}"
     EXPECTED_OUTPUT_FILE="${outputs[$index]}"
     K="${ks[$index]}"
+    N="${ns[$index]}"
+    D="${ds[$index]}"
     MAX_ITER="${max_iters[$index]}"
     ACTUAL_OUTPUT_FILE="actual_output_${index}.txt"
 
     echo "Running test for $INPUT_FILE and $EXPECTED_OUTPUT_FILE with K=$K and max_iter=${MAX_ITER:-'default'}..."
 
     if [ "${MAX_ITER}" -eq 0 ]; then
-        COMMAND="python3 $SCRIPT_PATH $K $INPUT_FILE"
+        COMMAND="python3 $SCRIPT_PATH $K $N $D $INPUT_FILE"
     else
-        COMMAND="python3 $SCRIPT_PATH $K $MAX_ITER $INPUT_FILE"
+        COMMAND="python3 $SCRIPT_PATH $K $N $D $MAX_ITER $INPUT_FILE"
     fi
     
     echo "Executing command: $COMMAND"
