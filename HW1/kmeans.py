@@ -137,7 +137,7 @@ def kmeans(k, iter, data):
     for i in range(iter):
         copy_centroids = list(centroids)
         for j in range(len(data)):
-            diffs = [(get_distance(data[j], centroid),index) for (centroid, index) in enumerate(centroids)]
+            diffs = [(get_distance(data[j], centroid),index) for (index, centroid) in enumerate(centroids)]
             closest_centroid = min(diffs, key = lambda x: x[0])[1]
             reassign_data_point(j,data[j], data_cluster[j], closest_centroid, clusters, data_cluster)
         update_centroids(centroids, clusters)
