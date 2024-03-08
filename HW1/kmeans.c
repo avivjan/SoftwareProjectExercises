@@ -57,7 +57,6 @@ void printCentroids(double *centroids, int k, int d);
  */
 int kMeansAlgorithm(int k, int n, int d, int iter);
 
-
 int main(int argc, char *argv[])
 {
     int k;
@@ -67,7 +66,8 @@ int main(int argc, char *argv[])
     /* for storing success of K-Means algorithm run */
     int success;
 
-    if (argc != 4 && argc != 5){
+    if (argc != 4 && argc != 5)
+    {
         printf("An Error Has Occurred");
         return 1;
     }
@@ -80,7 +80,8 @@ int main(int argc, char *argv[])
     {
         iter = atoi(argv[4]);
         /* checking input validity (1 < iter < 1000) */
-        if (iter <= 1 || iter >= 1000){
+        if (iter <= 1 || iter >= 1000)
+        {
             printf("Invalid maximum iteration!");
             return 1;
         }
@@ -91,15 +92,18 @@ int main(int argc, char *argv[])
     }
 
     /* checking input validity (1 < k < n, n > 1, d > 0) */
-    if (n <= 1){
+    if (n <= 1)
+    {
         printf("Invalid number of points!");
         return 1;
     }
-    if (k >= n || k <= 1){
+    if (k >= n || k <= 1)
+    {
         printf("Invalid number of clusters!");
         return 1;
     }
-    if (d < 1){
+    if (d < 1)
+    {
         printf("Invalid dimension of point!");
         return 1;
     }
@@ -114,7 +118,8 @@ double *kMeansInput(int n, int d)
     double *cursor;
     int i;
     inputArray = (double *)malloc(n * d * sizeof(double));
-    if (inputArray == NULL){
+    if (inputArray == NULL)
+    {
         return NULL;
     }
     cursor = inputArray;
@@ -150,7 +155,8 @@ double *initCentroids(double *dataPoints, int k, int d)
     double *centroidEnd;     /* end of current centroid (for looping over the coordinates of a single centroid)*/
 
     centroids = (double *)malloc(k * d * sizeof(double)); /* allocate centroids array*/
-    if (centroids == NULL){
+    if (centroids == NULL)
+    {
         return NULL;
     }
     centroidsEnd = centroids + k * d;
@@ -307,22 +313,26 @@ int kMeansAlgorithm(int k, int n, int d, int iter)
     int *clusterQtys;
     int i; /* for counting algorithm iterations */
     dataPoints = kMeansInput(n, d);
-    if (dataPoints == NULL){
+    if (dataPoints == NULL)
+    {
         printf("An Error Has Occurred");
         return 1;
     }
     centroids = initCentroids(dataPoints, k, d);
-    if (centroids == NULL){
+    if (centroids == NULL)
+    {
         printf("An Error Has Occurred");
         return 1;
     }
     clusterSums = (double *)calloc(k * d, sizeof(double)); /* sum of data points in each cluster*/
-    if (clusterSums == NULL){
+    if (clusterSums == NULL)
+    {
         printf("An Error Has Occurred");
         return 1;
     }
-    clusterQtys = (int *)calloc(k, sizeof(int));              /* Quantity of data points in each cluster*/
-    if (clusterQtys == NULL){
+    clusterQtys = (int *)calloc(k, sizeof(int)); /* Quantity of data points in each cluster*/
+    if (clusterQtys == NULL)
+    {
         printf("An Error Has Occurred");
         return 1;
     }
