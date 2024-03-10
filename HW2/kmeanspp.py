@@ -136,7 +136,7 @@ def init_centroids(data_points: np.ndarray, k: int):
     return centroids, choices
 
 
-def compute_d_x(data_points: np.ndarray, centroids: np.ndarray):  # want to make one-line
+def compute_d_x(data_points: np.ndarray, centroids: np.ndarray):
     """
     Computes D(x) array from data points array and array of centroids chosen so far.
 
@@ -144,12 +144,11 @@ def compute_d_x(data_points: np.ndarray, centroids: np.ndarray):  # want to make
     :param centroids: centroid array.
     :return: D(x) as np.ndarray
     """
-    d_x = np.ndarray(len(data_points))
+    d_x_squared = np.min(np.sum((data_points[:, np.newaxis, :] - centroids) ** 2, axis=2), axis=1)
 
-    for i in range(len(data_points)):
-        d_x[i] = np.sqrt(np.min(np.sum((data_points[i, :] - centroids) ** 2, axis=1)))
+    d_x = np.sqrt(d_x_squared)
+
     return d_x
-
 
 
 def prob_dist(d_x: np.ndarray):
