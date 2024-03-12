@@ -12,31 +12,39 @@ ERR_MSG = "An Error Has Occurred"
 # End of General Setup #
 
 def main():
-    if len(sys.argv) != 6:
-        print()
+    if len(sys.argv) != 6 and len(sys.argv) != 5:
+        print(ERR_MSG)
         return 1
 
     try:
         k = int(sys.argv[1])
     except:
-        print()
+        print(CLUSTER_MSG)
+        return 1
 
-    try:
-        iter = int(sys.argv[2])
-    except:
-        print(ITER_MSG)
+    if len(sys.argv) == 6:
+        try:
+            iter = int(sys.argv[2])
+        except:
+            print(ITER_MSG)
+            return 1
+    else:
+        iter = 300
     if iter < 1 or iter >= 1000:
         print(ITER_MSG)
+        return 1
 
     try:
-        eps = float(sys.argv[3])
+        eps = float(sys.argv[-3])
     except:
         print(EPS_MSG)
+        return 1
     if eps < 0:
         print(EPS_MSG)
+        return 1
 
-    path1 = sys.argv[4]
-    path2 = sys.argv[5]  # no input checks for file paths
+    path1 = sys.argv[-2]
+    path2 = sys.argv[-1]  # no input checks for file paths
 
     kmeans_pp(k, iter, eps, path1, path2)
 
