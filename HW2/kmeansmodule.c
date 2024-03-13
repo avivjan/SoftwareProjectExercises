@@ -5,8 +5,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-double epsilon = 0.001;
-
 double eucDist(double *vec1, double *vec2, int d);
 /*
  * Evaluates loop convergence condition using global variable
@@ -18,11 +16,11 @@ short converge(double *deltaArray);
 /*
  * Initializes centroids to first k elements.
  */
-int updateCentroids(double *centroids, double *clusterSums, int *clusterQtys, int k, int d);
+int updateCentroids(double *centroids, double *clusterSums, int *clusterQtys, int k, int d, double epsilon);
 /*
  * updates a single centroid. returns true iff convergence condition is true for current centroid.
  */
-int updateCentroid(double *centroid, double *clusterSum, int clusterQty, int d);
+int updateCentroid(double *centroid, double *clusterSum, int clusterQty, int d, double epsilon);
 /*
  * Makes all values of clusterSums and clusterQtys 0.
  */
@@ -40,7 +38,7 @@ void computeClusterSums(double *dataPoints, double *centroids, double *clusterSu
 /*
  * Returns the updated centroids.
  */
-int fit(int k, int n, int d, int iter, double *initialCentroids, double *dataPoints);
+int fit(int k, int n, int d, int iter, double epsilon, double *initialCentroids, double *dataPoint);
 
 double eucDist(double *vec1, double *vec2, int d)
 {
@@ -54,7 +52,7 @@ double eucDist(double *vec1, double *vec2, int d)
     return sqrt(distSquared);
 }
 
-int updateCentroid(double *centroid, double *clusterSum, int clusterQty, int d)
+int updateCentroid(double *centroid, double *clusterSum, int clusterQty, int d, double epsilon)
 {
     double *newCentroidCursor; /* pointer in clusterSum array*/
     double *clusterSumEnd;     /* end of clusterSum, for loops*/
@@ -96,7 +94,7 @@ void clearClusters(double *clusterSums, int *clusterQtys, int k, int d)
     }
 }
 
-int updateCentroids(double *centroids, double *clusterSums, int *clusterQtys, int k, int d)
+int updateCentroids(double *centroids, double *clusterSums, int *clusterQtys, int k, int d, double epsilon)
 {
     int res = 1;
     double *centroidsCursor = centroids;
@@ -107,7 +105,7 @@ int updateCentroids(double *centroids, double *clusterSums, int *clusterQtys, in
     {
         /* update current centroid. Change res to false if current centroid does not*/
         /* abide convergence condition in this iteration.*/
-        res = updateCentroid(centroidsCursor, clusterSumsCursor, *clusterQtysCursor, d) && res;
+        res = updateCentroid(centroidsCursor, clusterSumsCursor, *clusterQtysCursor, d, epsilon) && res;
 
         /* advance cursors*/
         centroidsCursor += d;
@@ -168,7 +166,7 @@ void computeClusterSums(double *dataPoints, double *centroids, double *clusterSu
     /* function is done, so will return*/
 }
 
-double *KMeans(int k, int n, int d, int iter, double *initialCentroids, double *dataPoints)
+double *KMeans(int k, int n, int d, int iter, double *initialCentroids, double *dataPoints, double epsilon)
 {
     double *clusterSums;
     int *clusterQtys;
@@ -202,7 +200,7 @@ double *KMeans(int k, int n, int d, int iter, double *initialCentroids, double *
     do
     {
         computeClusterSums(dataPoints, centroids, clusterSums, clusterQtys, k, n, d);
-    } while (++i < iter && !updateCentroids(centroids, clusterSums, clusterQtys, k, d));
+    } while (++i < iter && !updateCentroids(centroids, clusterSums, clusterQtys, k, d, epsilon));
 
     free(clusterSums);
     free(clusterQtys);
@@ -221,8 +219,9 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     double *initialCentroidsArray;
     double *dataPointsArray;
     double num;
+    double epsilon = 0.0001;
 
-    if (!PyArg_ParseTuple(args, "iiiiOO", &k, &n, &d, &iter, &initialCentroids, &dataPoints))
+    if (!PyArg_ParseTuple(args, "iiiidOO", &k, &n, &d, &iter, &epsilon, &initialCentroids, &dataPoints))
     {
         return NULL;
     }
@@ -265,7 +264,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
         dataPointsArray[i] = num;
     }
 
-    double *result = KMeans(k, n, d, iter, initialCentroidsArray, dataPointsArray);
+    double *result = KMeans(k, n, d, iter, initialCentroidsArray, dataPointsArray, epsilon);
     /* return result to python */
     ret = PyList_New(k * d);
 
