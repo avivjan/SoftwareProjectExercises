@@ -1,10 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-
 double eucDist(double *vec1, double *vec2, int d);
 /*
  * Evaluates loop convergence condition using global variable
@@ -175,25 +171,22 @@ double *KMeans(int k, int n, int d, int iter, double *initialCentroids, double *
 
     if (dataPoints == NULL)
     {
-        printf("An Error Has Occurred");
         return NULL;
     }
     centroids = initialCentroids;
     if (centroids == NULL)
     {
-        printf("An Error Has Occurred");
         return NULL;
     }
     clusterSums = (double *)calloc(k * d, sizeof(double)); /* sum of data points in each cluster*/
     if (clusterSums == NULL)
     {
-        printf("An Error Has Occurred");
+
         return NULL;
     }
     clusterQtys = (int *)calloc(k, sizeof(int)); /* Quantity of data points in each cluster*/
     if (clusterQtys == NULL)
     {
-        printf("An Error Has Occurred");
         return NULL;
     }
     i = 0;
@@ -220,6 +213,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     double *dataPointsArray;
     double num;
     double epsilon;
+    char formatted_str[100];
 
     if (!PyArg_ParseTuple(args, "iiiidOO", &k, &n, &d, &iter, &epsilon, &initialCentroids, &dataPoints))
     {
@@ -265,12 +259,20 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     }
 
     double *result = KMeans(k, n, d, iter, initialCentroidsArray, dataPointsArray, epsilon);
+    if (result == NULL)
+    {
+        free(initialCentroidsArray);
+        free(dataPointsArray);
+        return NULL;
+    }
     /* return result to python */
     ret = PyList_New(k * d);
 
     for (int i = 0; i < k * d; i++)
     {
-        python_float = PyFloat_FromDouble(result[i]);
+        snprintf(formatted_str, sizeof(formatted_str), "%.4f", result[i]);
+        double formatted_double = strtod(formatted_str, NULL); // Convert the formatted string back to double
+        python_float = PyFloat_FromDåouble(result[i]);
         PyList_SetItem(ret, i, python_float);
     }
     free(initialCentroidsArray);
@@ -280,10 +282,10 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
 
 static PyMethodDef kmeansMethods[] = {
     {
-        "fit",                                                                                                                                                                                        /*name exposed to Python*/
-        k_means_wrapper,                                                                                                                                                                              /* C wrapper function */
-        METH_VARARGS,                                                                                                                                                                                 /* received variable args */
-        "Calculate kmeans clusters given initial centroids \nInput: int k, int n, int d, int iter, list_of_float initialCentroids, list_of_float dataPoints) \n Returns : centoids(k *d float list) " /* documentation */
+        "fit",                                                                                                                                                                                                       /*name exposed to Python*/
+        k_means_wrapper,                                                                                                                                                                                             /* C wrapper function */
+        METH_VARARGS,                                                                                                                                                                                                /* received variable args */
+        "Calculate kmeans clusters given initial centroids \nInput: int k, int n, int d, int iter, float epsilon, list_of_float initialCentroids, list_of_float dataPoints) \n Returns : centoids(k *d float list) " /* documentation */
     },
     {NULL, NULL, 0, NULL}};
 
