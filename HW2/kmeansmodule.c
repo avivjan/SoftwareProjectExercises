@@ -272,7 +272,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     {
         snprintf(formatted_str, sizeof(formatted_str), "%.4f", result[i]);
         double formatted_double = strtod(formatted_str, NULL); // Convert the formatted string back to double
-        python_float = PyFloat_FromDåouble(result[i]);
+        python_float = PyFloat_FromDouble(formatted_double);
         PyList_SetItem(ret, i, python_float);
     }
     free(initialCentroidsArray);
@@ -291,13 +291,13 @@ static PyMethodDef kmeansMethods[] = {
 
 static struct PyModuleDef kmeansmodule = {
     PyModuleDef_HEAD_INIT,
-    "kmeans",     /* name of module */
+    "mykmeanssp", /* name of module */
     NULL,         /* module documentation, may be NULL */
     -1,           /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
     kmeansMethods /* the PyMethodDef array from before containing the methods of the extension */
 };
 
-PyMODINIT_FUNC PyInit_kmeans(void)
+PyMODINIT_FUNC PyInit_mykmeanssp(void)
 {
     PyObject *m;
     m = PyModule_Create(&kmeansmodule);

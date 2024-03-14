@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
 import numpy as np
-import kmeans as km
+import mykmeanssp as km
 
 # General Setup #
 np.random.seed(0)
