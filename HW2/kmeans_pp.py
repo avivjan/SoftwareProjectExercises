@@ -177,7 +177,7 @@ def prob_dist(d_x: np.ndarray):
     return d_x / np.sum(d_x)
 
 
-def print_centroids(centroids: list[float], k: int, d: int):
+def print_centroids(centroids, k: int, d: int):
     """
     Print final result of kmeans algorithm, e.g. the resulting centroids.
     :param k: number of centroids.
