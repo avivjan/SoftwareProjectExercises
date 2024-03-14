@@ -30,7 +30,7 @@ def main():
             return 1
     else:
         iter = 300
-    if iter < 1 or iter >= 1000:
+    if iter < 2 or iter >= 1000:
         print(ITER_MSG)
         return 1
 
@@ -75,7 +75,7 @@ def kmeans_pp(k: int, iter: int, eps: float, path1: str, path2: str):
     # convert to numpy array
     data_array_with_keys = data.to_numpy()
     # verify 1 < k < N
-    if k < 1 or k > len(data_array_with_keys):
+    if k < 2 or k > len(data_array_with_keys):
         print(CLUSTER_MSG)
         return
     # split into data and keys arrays
@@ -88,15 +88,18 @@ def kmeans_pp(k: int, iter: int, eps: float, path1: str, path2: str):
     chosen_keys = [keys_array[ind] for ind in choices]
 
     # execute kmeans algorithm using initial centroids
-    result = km.fit(k, len(data_array), d, iter,
+    try:
+        result = km.fit(k, len(data_array), d, iter, eps,
                     ini_centroids.flatten().tolist(), data_array.flatten().tolist())
-    
-    if result == None:
+    except Exception as e:
         print(ERR_MSG)
         return
+    
+   
 
     # print keys of data points chosen as centroids
-    print(",".join([str(key) for key in chosen_keys]))
+    print(",".join([str(int(key)) for key in chosen_keys]))
+ 
     # print centroids themselves
     print_centroids(result, k, d)
 

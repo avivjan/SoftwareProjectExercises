@@ -171,22 +171,25 @@ double *KMeans(int k, int n, int d, int iter, double *initialCentroids, double *
 
     if (dataPoints == NULL)
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     centroids = initialCentroids;
     if (centroids == NULL)
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     clusterSums = (double *)calloc(k * d, sizeof(double)); /* sum of data points in each cluster*/
     if (clusterSums == NULL)
     {
-
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     clusterQtys = (int *)calloc(k, sizeof(int)); /* Quantity of data points in each cluster*/
     if (clusterQtys == NULL)
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     i = 0;
@@ -217,12 +220,14 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
 
     if (!PyArg_ParseTuple(args, "iiiidOO", &k, &n, &d, &iter, &epsilon, &initialCentroids, &dataPoints))
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     initialCentroidsLength = PyObject_Length(initialCentroids);
     dataPointsLength = PyObject_Length(dataPoints);
     if (initialCentroidsLength < 0 || dataPointsLength < 0)
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     initialCentroidsArray = (double *)malloc(initialCentroidsLength * sizeof(double));
@@ -231,6 +236,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     {
         free(initialCentroidsArray);
         free(dataPointsArray);
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     for (int i = 0; i < initialCentroidsLength; i++)
@@ -241,6 +247,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
         {
             free(initialCentroidsArray);
             free(dataPointsArray);
+            PyErr_SetString(PyExc_ValueError, "");
             return NULL;
         }
         initialCentroidsArray[i] = num;
@@ -253,6 +260,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
         {
             free(initialCentroidsArray);
             free(dataPointsArray);
+            PyErr_SetString(PyExc_ValueError, "");
             return NULL;
         }
         dataPointsArray[i] = num;
@@ -263,8 +271,10 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     {
         free(initialCentroidsArray);
         free(dataPointsArray);
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
+
     /* return result to python */
     ret = PyList_New(k * d);
 
@@ -303,6 +313,7 @@ PyMODINIT_FUNC PyInit_mykmeanssp(void)
     m = PyModule_Create(&kmeansmodule);
     if (m == NULL)
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     return m;
