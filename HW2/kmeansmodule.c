@@ -219,7 +219,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     double *initialCentroidsArray;
     double *dataPointsArray;
     double num;
-    double epsilon = 0.0001;
+    double epsilon;
 
     if (!PyArg_ParseTuple(args, "iiiidOO", &k, &n, &d, &iter, &epsilon, &initialCentroids, &dataPoints))
     {
