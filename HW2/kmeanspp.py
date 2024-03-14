@@ -90,6 +90,10 @@ def kmeans_pp(k: int, iter: int, eps: float, path1: str, path2: str):
     # execute kmeans algorithm using initial centroids
     result = km.fit(k, len(data_array), d, iter,
                     ini_centroids.flatten().tolist(), data_array.flatten().tolist())
+    
+    if result == None:
+        print(ERR_MSG)
+        return
 
     # print keys of data points chosen as centroids
     print(",".join([str(key) for key in chosen_keys]))
