@@ -1,10 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-
 double eucDist(double *vec1, double *vec2, int d);
 /*
  * Evaluates loop convergence condition using global variable
@@ -175,25 +171,25 @@ double *KMeans(int k, int n, int d, int iter, double *initialCentroids, double *
 
     if (dataPoints == NULL)
     {
-        printf("An Error Has Occurred");
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     centroids = initialCentroids;
     if (centroids == NULL)
     {
-        printf("An Error Has Occurred");
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     clusterSums = (double *)calloc(k * d, sizeof(double)); /* sum of data points in each cluster*/
     if (clusterSums == NULL)
     {
-        printf("An Error Has Occurred");
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     clusterQtys = (int *)calloc(k, sizeof(int)); /* Quantity of data points in each cluster*/
     if (clusterQtys == NULL)
     {
-        printf("An Error Has Occurred");
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     i = 0;
@@ -219,16 +215,19 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     double *initialCentroidsArray;
     double *dataPointsArray;
     double num;
-    double epsilon = 0.0001;
+    double epsilon;
+    char formatted_str[100];
 
     if (!PyArg_ParseTuple(args, "iiiidOO", &k, &n, &d, &iter, &epsilon, &initialCentroids, &dataPoints))
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     initialCentroidsLength = PyObject_Length(initialCentroids);
     dataPointsLength = PyObject_Length(dataPoints);
     if (initialCentroidsLength < 0 || dataPointsLength < 0)
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     initialCentroidsArray = (double *)malloc(initialCentroidsLength * sizeof(double));
@@ -237,6 +236,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
     {
         free(initialCentroidsArray);
         free(dataPointsArray);
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     for (int i = 0; i < initialCentroidsLength; i++)
@@ -247,6 +247,7 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
         {
             free(initialCentroidsArray);
             free(dataPointsArray);
+            PyErr_SetString(PyExc_ValueError, "");
             return NULL;
         }
         initialCentroidsArray[i] = num;
@@ -259,18 +260,29 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
         {
             free(initialCentroidsArray);
             free(dataPointsArray);
+            PyErr_SetString(PyExc_ValueError, "");
             return NULL;
         }
         dataPointsArray[i] = num;
     }
 
     double *result = KMeans(k, n, d, iter, initialCentroidsArray, dataPointsArray, epsilon);
+    if (result == NULL)
+    {
+        free(initialCentroidsArray);
+        free(dataPointsArray);
+        PyErr_SetString(PyExc_ValueError, "");
+        return NULL;
+    }
+
     /* return result to python */
     ret = PyList_New(k * d);
 
     for (int i = 0; i < k * d; i++)
     {
-        python_float = PyFloat_FromDouble(result[i]);
+        snprintf(formatted_str, sizeof(formatted_str), "%.4f", result[i]);
+        double formatted_double = strtod(formatted_str, NULL); // Convert the formatted string back to double
+        python_float = PyFloat_FromDouble(formatted_double);
         PyList_SetItem(ret, i, python_float);
     }
     free(initialCentroidsArray);
@@ -280,27 +292,28 @@ static PyObject *k_means_wrapper(PyObject *self, PyObject *args)
 
 static PyMethodDef kmeansMethods[] = {
     {
-        "fit",                                                                                                                                                                                        /*name exposed to Python*/
-        k_means_wrapper,                                                                                                                                                                              /* C wrapper function */
-        METH_VARARGS,                                                                                                                                                                                 /* received variable args */
-        "Calculate kmeans clusters given initial centroids \nInput: int k, int n, int d, int iter, list_of_float initialCentroids, list_of_float dataPoints) \n Returns : centoids(k *d float list) " /* documentation */
+        "fit",                                                                                                                                                                                                       /*name exposed to Python*/
+        k_means_wrapper,                                                                                                                                                                                             /* C wrapper function */
+        METH_VARARGS,                                                                                                                                                                                                /* received variable args */
+        "Calculate kmeans clusters given initial centroids \nInput: int k, int n, int d, int iter, float epsilon, list_of_float initialCentroids, list_of_float dataPoints) \n Returns : centoids(k *d float list) " /* documentation */
     },
     {NULL, NULL, 0, NULL}};
 
 static struct PyModuleDef kmeansmodule = {
     PyModuleDef_HEAD_INIT,
-    "kmeans",     /* name of module */
+    "mykmeanssp", /* name of module */
     NULL,         /* module documentation, may be NULL */
     -1,           /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
     kmeansMethods /* the PyMethodDef array from before containing the methods of the extension */
 };
 
-PyMODINIT_FUNC PyInit_kmeans(void)
+PyMODINIT_FUNC PyInit_mykmeanssp(void)
 {
     PyObject *m;
     m = PyModule_Create(&kmeansmodule);
     if (m == NULL)
     {
+        PyErr_SetString(PyExc_ValueError, "");
         return NULL;
     }
     return m;
